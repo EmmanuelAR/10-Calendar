@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import Modal from "react-modal";
 
 const customStyles = {
@@ -15,12 +15,23 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 export const CalendarModal = () => {
+  const [isModalOpen, setIsModalOpen] = useState(true);
+
   const onCloseModal = () => {
     console.log("cerrando modal");
+    setIsModalOpen(false);
   };
   return (
-    <Modal isOpen={true} onRequestClose={onCloseModal} style={customStyles}>
+    <Modal
+      isOpen={isModalOpen}
+      onRequestClose={onCloseModal}
+      style={customStyles}
+      className="modal"
+      overlayClassName="modal-fondo"
+      closeTimeoutMS={200}
+    >
       <h1>Hola mundo</h1>
+      <hr />
     </Modal>
   );
 };
