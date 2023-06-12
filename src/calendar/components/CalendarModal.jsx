@@ -7,6 +7,7 @@ import es from "date-fns/locale/es";
 import { differenceInSeconds } from "date-fns";
 import Swal from "sweetalert2";
 import "sweetalert2/dist/sweetalert2.min.css";
+import { useUiStore } from "../../hooks";
 
 registerLocale("es", es);
 
@@ -24,6 +25,7 @@ const customStyles = {
 Modal.setAppElement("#root");
 
 export const CalendarModal = () => {
+  const { isDateModalOpen, closeDateModal } = useUiStore();
   const [isModalOpen, setIsModalOpen] = useState(true);
   const [formSubmitted, setFormSubmitted] = useState(false);
 
@@ -47,8 +49,7 @@ export const CalendarModal = () => {
   };
 
   const onCloseModal = () => {
-    console.log("cerrando modal");
-    setIsModalOpen(false);
+    closeDateModal();
   };
 
   const onDateChange = (event, changing) => {
@@ -77,7 +78,7 @@ export const CalendarModal = () => {
 
   return (
     <Modal
-      isOpen={isModalOpen}
+      isOpen={isDateModalOpen}
       onRequestClose={onCloseModal}
       style={customStyles}
       className="modal"
