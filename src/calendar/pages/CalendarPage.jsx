@@ -9,13 +9,17 @@ import {
 } from "../";
 import { localizer } from "../../helpers/calendarLocalizer";
 import { getMessagesES } from "../../helpers/getMessages";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useUiStore } from "../../hooks";
 import { useCalendarStore } from "../../hooks";
 
 export const CalendarPage = () => {
-  const { events, setActiveEvent } = useCalendarStore();
+  const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openDateModal } = useUiStore();
+
+  useEffect(() => {
+    startLoadingEvents();
+  }, []);
 
   const [lastView, setLastView] = useState(
     localStorage.getItem("lastView") || "week"
