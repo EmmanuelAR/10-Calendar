@@ -31,14 +31,17 @@ export const useCalendarStore = () => {
       const { data } = await calendarApi.post("/events", calendarEvent);
       dispatch(onAddNewEvent({ ...calendarEvent, _id: data.evento.id, user }));
     } catch (error) {
-      console.log(error);
       Swal.fire("Error al guardar", error.response.data.msg, "error");
     }
   };
 
-  const startDeletingEvent = () => {
-    // TODO: LLEGAR AL BACKEND
-    dispatch(onDeleteEvent());
+  const startDeletingEvent = async () => {
+    try {
+      await calendarApi.delete(`/events/${activeEvent.id}`, activeEvent);
+      dispatch(onDeleteEvent());
+    } catch (error) {
+      Swal.fire("Error al eliminar.", error.response.data.msg, "error");
+    }
   };
 
   const startLoadingEvents = async () => {

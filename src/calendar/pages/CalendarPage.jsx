@@ -10,12 +10,13 @@ import {
 import { localizer } from "../../helpers/calendarLocalizer";
 import { getMessagesES } from "../../helpers/getMessages";
 import { useEffect, useState } from "react";
-import { useUiStore } from "../../hooks";
+import { useAuthStore, useUiStore } from "../../hooks";
 import { useCalendarStore } from "../../hooks";
 
 export const CalendarPage = () => {
   const { events, setActiveEvent, startLoadingEvents } = useCalendarStore();
   const { openDateModal } = useUiStore();
+  const { user } = useAuthStore();
 
   useEffect(() => {
     startLoadingEvents();
@@ -26,8 +27,10 @@ export const CalendarPage = () => {
   );
 
   const eventStyleGetter = (event, start, end, isSelected) => {
+    const isMyEvent =
+      user.uid === event.user._id || user.uid === event.user.uid;
     const style = {
-      backgroundColor: "#347CF7",
+      backgroundColor: isMyEvent ? "#347CF7" : "#465660",
       borderRadius: "0px",
       opacity: 0.8,
       color: "white",
