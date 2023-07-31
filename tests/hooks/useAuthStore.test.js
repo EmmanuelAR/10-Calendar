@@ -1,6 +1,7 @@
 import { configureStore } from "@reduxjs/toolkit";
 import { act, renderHook, waitFor } from "@testing-library/react";
 import { Provider } from "react-redux";
+import calendarApi from "../../src/api/calendarApi";
 import { useAuthStore } from "../../src/hooks/useAuthStore";
 import { authSlice } from "../../src/store/auth/authSlice";
 import { initialState, notAuthenticatedState } from "../fixtures/authStates";
@@ -10,6 +11,8 @@ import {
 } from "../fixtures/testUser";
 
 describe("Pruebas en el useAuthStore", () => {
+  beforeEach(() => localStorage.clear());
+
   const getMockStore = (initialState) => {
     return configureStore({
       reducer: {
@@ -41,7 +44,6 @@ describe("Pruebas en el useAuthStore", () => {
   });
 
   test("StarLogin debe de realizar el login correctamente", async () => {
-    localStorage.clear();
     const mockStore = getMockStore({ ...notAuthenticatedState });
     const { result } = renderHook(() => useAuthStore(), {
       wrapper: ({ children }) => (
@@ -66,7 +68,6 @@ describe("Pruebas en el useAuthStore", () => {
   });
 
   test("StarLogin debe de realizar el login y falle.", async () => {
-    localStorage.clear();
     const mockStore = getMockStore({ ...notAuthenticatedState });
     const { result } = renderHook(() => useAuthStore(), {
       wrapper: ({ children }) => (
@@ -90,5 +91,35 @@ describe("Pruebas en el useAuthStore", () => {
     expect(localStorage.getItem("token-init-date")).toEqual(null);
 
     await waitFor(() => expect(result.current.errorMessage).toBe(undefined));
+  });
+
+  test("startRegister debe de crear un usuario.", async () => {
+    const newUser = {
+      email: "algo@gmail.com",
+      password: "123456",
+      name: "nombreFake",
+    };
+    const mockStore = getMockStore({ ...notAuthenticatedState });
+    const { result } = renderHook(() => useAuthStore(), {
+      wrapper: ({ children }) => (
+        <Provider store={mockStore}>{children}</Provider>
+      ),
+    });
+
+    const spy = jest.spyOn(calendarApi, "post").mockReturnValue({
+      data: {
+        ok: true,
+        uid: "64c7d2e1a57375c407dbfb6b",
+        name: "Test User",
+        token: "TOKEN",
+      },
+    });
+
+    await act(async () => {
+      await result.current.startRegister(newUser);
+    });
+
+    const { errorMessage, status, user } = result.current;
+    console.log(errorMessage, status, user);
   });
 });
