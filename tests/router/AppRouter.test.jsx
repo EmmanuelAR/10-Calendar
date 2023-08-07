@@ -18,9 +18,9 @@ describe("Pruebas en el AppRouter", () => {
     expect(screen.getByText("Cargando...")).toBeTruthy();
   });
 
-  test("Debe de mostrar el login en caso de no estar autenticado", () => {
+  test("Debe de mostrar el login en caso de no estar autenticado.", () => {
     useAuthStore.mockReturnValue({
-      status: "checking",
+      status: "not-authenticated",
       checkAuthToken: mockcheckAuthToken,
     });
     render(<AppRouter />);
